@@ -85,6 +85,7 @@ public class TagView extends TextView {
             this.setVisibility(View.GONE);
             return;
         }
+        this.setVisibility(View.VISIBLE);
 
         final SpannableStringBuilder sb = new SpannableStringBuilder();
         Iterator<? extends Tag> it = tags.iterator();
