@@ -1,5 +1,10 @@
 apply plugin: 'com.android.application'
 
+// Manifest version
+def versionMajor = 0
+def versionMinor = 2
+def versionPatch = 0
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -10,9 +15,8 @@ android {
         minSdkVersion 9
         targetSdkVersion 25
 
-        versionCode 10
-        versionName "0.1.0"
-
+        versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
+        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
 }
 
