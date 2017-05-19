@@ -25,7 +25,6 @@ import android.support.v4.view.ViewPager;
 
 import java.util.LinkedList;
 
-import pl.charmas.android.tagview.R;
 import pl.charmas.android.tagview.TagView;
 
 public class MainActivity extends FragmentActivity {

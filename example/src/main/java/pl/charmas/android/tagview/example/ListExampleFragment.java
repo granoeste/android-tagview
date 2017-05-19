@@ -25,7 +25,6 @@ import android.widget.BaseAdapter;
 import java.util.LinkedList;
 import java.util.List;
 
-import pl.charmas.android.tagview.R;
 import pl.charmas.android.tagview.TagView;
 
 public class ListExampleFragment extends ListFragment{

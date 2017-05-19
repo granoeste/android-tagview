@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import pl.charmas.android.tagview.R;
 import pl.charmas.android.tagview.TagView;
 
 public class StaticFragment extends Fragment {
