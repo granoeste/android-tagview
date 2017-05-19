@@ -43,10 +43,14 @@ public class TagView extends TextView {
     private static final int DEFAULT_PADDING = 8;
     private static final int DEFAULT_CORNER_RADIUS = 6;
     private static final boolean DEFAULT_UPPERCASE = true;
+    private static final int DEFAULT_MARGIN = 0;
+    private static final int DEFAULT_MIN_WIDTH = 0;
 
     private int tagPadding;
     private int tagCornerRadius;
     private boolean uppercaseTags = DEFAULT_UPPERCASE;
+    private int tagMargin;
+    private int tagMinWidth;
 
     @SuppressWarnings("UnusedDeclaration")
     public TagView(Context context) {
@@ -64,10 +68,14 @@ public class TagView extends TextView {
             tagPadding = attributesArray.getDimensionPixelSize(R.styleable.TagView_tagPadding, dipToPixels(DEFAULT_PADDING));
             tagCornerRadius = attributesArray.getDimensionPixelSize(R.styleable.TagView_tagCornerRadius, dipToPixels(DEFAULT_CORNER_RADIUS));
             uppercaseTags = attributesArray.getBoolean(R.styleable.TagView_tagUppercase, DEFAULT_UPPERCASE);
+            tagMargin = attributesArray.getDimensionPixelSize(R.styleable.TagView_tagMargin, DEFAULT_MARGIN);
+            tagMinWidth = attributesArray.getDimensionPixelSize(R.styleable.TagView_tagMinWidth, DEFAULT_MIN_WIDTH);
             attributesArray.recycle();
         } else {
             tagPadding = dipToPixels(DEFAULT_PADDING);
             tagCornerRadius = dipToPixels(DEFAULT_CORNER_RADIUS);
+            tagMargin = dipToPixels(DEFAULT_MARGIN);
+            tagMinWidth = dipToPixels(DEFAULT_MIN_WIDTH);
         }
     }
 
@@ -109,6 +117,8 @@ public class TagView extends TextView {
         return new TagSpan(
                 text,
                 tagPadding,
+                tagMargin,
+                tagMinWidth,
                 getTextSize(),
                 getTypeface() == Typeface.DEFAULT_BOLD,
                 getCurrentTextColor(),
@@ -160,8 +170,8 @@ public class TagView extends TextView {
     }
 
     private static class TagSpan extends ImageSpan {
-        public TagSpan(String text, int tagPadding, float textSize, boolean bold, int textColor, int tagColor, float roundCornersFactor) {
-            super(new TagDrawable(text, tagPadding, textSize, bold, textColor, tagColor, roundCornersFactor));
+        public TagSpan(String text, int tagPadding, int tagMargin, int tagMinWidth, float textSize, boolean bold, int textColor, int tagColor, float roundCornersFactor) {
+            super(new TagDrawable(text, tagPadding, tagMargin, tagMinWidth, textSize, bold, textColor, tagColor, roundCornersFactor));
         }
     }
 
@@ -174,9 +184,12 @@ public class TagView extends TextView {
         private final Paint backgroundPaint;
         private final RectF fBounds;
         private Rect backgroundPadding;
+        private int margin;
+        private int textOffset;
 
-        public TagDrawable(String text, int tagPadding, float textSize, boolean bold, int textColor, int tagColor, float roundCornersFactor) {
+        public TagDrawable(String text, int tagPadding, int tagMargin, int tagMinWidth, float textSize, boolean bold, int textColor, int tagColor, float roundCornersFactor) {
             this.backgroundPadding = new Rect(tagPadding, tagPadding, tagPadding, tagPadding);
+            margin = tagMargin;
             this.text = text;
             this.roundCornersFactor = roundCornersFactor;
             this.textContentPain = new Paint();
@@ -192,9 +205,15 @@ public class TagView extends TextView {
             backgroundPaint.setStyle(Paint.Style.FILL);
             backgroundPaint.setAntiAlias(true);
 
-            setBounds(0, 0,
-                    (int) textContentPain.measureText(text) + backgroundPadding.left + backgroundPadding.right,
-                    (int) (textContentPain.getTextSize() + backgroundPadding.top + backgroundPadding.bottom)
+            int width = (int) textContentPain.measureText(text) + backgroundPadding.left + backgroundPadding.right + margin;
+            if (width < tagMinWidth) {
+                textOffset = (tagMinWidth - width) / 2;
+                width = tagMinWidth;
+            }
+
+            setBounds(margin, margin,
+                    width,
+                    (int) (textContentPain.getTextSize() + backgroundPadding.top + backgroundPadding.bottom + margin)
             );
             fBounds = new RectF(getBounds());
         }
@@ -202,7 +221,7 @@ public class TagView extends TextView {
         @Override
         public void draw(Canvas canvas) {
             canvas.drawRoundRect(fBounds, roundCornersFactor, roundCornersFactor, backgroundPaint);
-            canvas.drawText(text, backgroundPadding.left + MAGIC_PADDING_LEFT, textContentPain.getTextSize() + backgroundPadding.top - MAGIC_PADDING_BOTTOM, textContentPain);
+            canvas.drawText(text, backgroundPadding.left + MAGIC_PADDING_LEFT + textOffset + margin, textContentPain.getTextSize() + backgroundPadding.top - MAGIC_PADDING_BOTTOM + margin, textContentPain);
         }
 
         @Override

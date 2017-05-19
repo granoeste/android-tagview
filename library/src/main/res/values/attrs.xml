@@ -20,5 +20,7 @@ limitations under the License.
         <attr name="tagCornerRadius" format="dimension" />
         <attr name="tagPadding" format="dimension" />
         <attr name="tagUppercase" format="boolean" />
+        <attr name="tagMargin" format="dimension" />
+        <attr name="tagMinWidth" format="dimension" />
     </declare-styleable>
 </resources>
